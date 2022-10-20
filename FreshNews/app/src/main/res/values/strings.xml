@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NoticiasFrescas</string>
+    <string name="sports_news">SPORTS NEWS</string>
+    <string name="technology_news">TECHNOLOGY NEWS</string>
+    <string name="entertainment_news">ENTERTAINMENT NEWS</string>
+    <string name="science_news">SCIENCE NEWS</string>
+</resources>
