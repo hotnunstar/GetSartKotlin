@@ -7,21 +7,24 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 
-class MainActivityStart : AppCompatActivity() {
+class NewsCategoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_start)
+        setContentView(R.layout.activity_news_category)
+
+        val language = intent.getStringExtra("language").toString()
 
         val onButtonNewsPressed : ((View)->Unit)? = {
             val buttonPressed = it as? Button
             val newsPressed : String = buttonPressed?.text.toString()
 
-            val category = newsPressed.substring(0, newsPressed.indexOf(' ')) // Obtém a primeira palavra da string para definir a categoria
-            Log.d(MainActivity.TAG, category)
+            val category = newsPressed.substring(0, newsPressed.indexOf(' ')).lowercase() // Obtém a primeira palavra da string para definir a categoria
+            Log.d("Category:", category)
 
-            val intent = Intent(this@MainActivityStart, MainActivity::class.java)
+            val intent = Intent(this@NewsCategoryActivity, NewsPageActivity::class.java)
             intent.putExtra("category", category)
+            intent.putExtra("language", language)
             startActivity(intent)
         }
 

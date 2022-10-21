@@ -3,7 +3,6 @@ package ipca.example.noticiasfrescas
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,20 +19,20 @@ object Backend {
     private val client = OkHttpClient()
 
     fun fetchTopHeadlines(scope: CoroutineScope,
-                          country: String,
+                          language: String,
                           category: String,
                           callback: (ArrayList<Article>)->Unit )   {
         scope.launch (Dispatchers.IO) {
 
             val request = Request.Builder()
-                .url("https://newsapi.org/v2/top-headlines?country=$country&category=$category&apiKey=$API_KEY")
+                .url("https://newsapi.org/v2/top-headlines?language=$language&category=$category&apiKey=$API_KEY")
                 .build()
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
                 val result =  response.body!!.string()
-                Log.d(MainActivity.TAG, result)
+                Log.d(NewsPageActivity.TAG, result)
 
                 val jsonObject = JSONObject(result)
                 if (jsonObject.getString("status") == "ok"){

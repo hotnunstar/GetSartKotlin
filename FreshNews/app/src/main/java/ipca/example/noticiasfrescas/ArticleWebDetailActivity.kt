@@ -13,7 +13,7 @@ class ArticleWebDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article_web_detail)
 
-        article = Article.fromJSON(JSONObject(intent.getStringExtra(MainActivity.EXTRA_ARTICLE)))
+        article = Article.fromJSON(JSONObject(intent.getStringExtra(NewsPageActivity.EXTRA_ARTICLE)))
 
         title = article?.title
 

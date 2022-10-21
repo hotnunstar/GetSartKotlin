@@ -14,15 +14,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NoticiasFrescas"
         tools:targetApi="31">
-
         <activity
-            android:name=".MainActivity"
+            android:name=".NewsCategoryActivity"
             android:exported="false">
-        <meta-data
-            android:name="android.app.lib_name"
-            android:value="" />
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
-
+        <activity
+            android:name=".NewsPageActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".ArticleWebDetailActivity"
             android:exported="false">
@@ -38,7 +43,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivityStart"
+            android:name=".ChooseLanguageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +55,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
     </application>
 
 </manifest>

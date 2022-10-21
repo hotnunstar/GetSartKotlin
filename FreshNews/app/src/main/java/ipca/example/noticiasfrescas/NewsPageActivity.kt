@@ -11,10 +11,9 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import org.json.JSONObject
 
 
-class MainActivity : AppCompatActivity() {
+class NewsPageActivity : AppCompatActivity() {
 
     // model
     var articles = arrayListOf<Article>()
@@ -22,13 +21,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_news_page)
 
         val category = intent.getStringExtra("category").toString()
+        val language = intent.getStringExtra("language").toString()
 
-        //val category = "sports"
-
-        Backend.fetchTopHeadlines(lifecycleScope, "pt", category){
+        Backend.fetchTopHeadlines(lifecycleScope, language, category){
             articles = it
             adapter.notifyDataSetChanged()
         }
@@ -70,12 +68,8 @@ class MainActivity : AppCompatActivity() {
 
             rowView.setOnClickListener {
                 Log.d(TAG, "article:${article.title}")
-                //val intent = Intent(this@MainActivity, ArticleDetailActivity::class.java)
-                //intent.putExtra("title", article.title)
-                //intent.putExtra("body",article.content)
-                //startActivity(intent)
 
-                val intent = Intent(this@MainActivity, ArticleWebDetailActivity::class.java)
+                val intent = Intent(this@NewsPageActivity, ArticleWebDetailActivity::class.java)
                 intent.putExtra(EXTRA_ARTICLE, article.toJSON().toString())
                 startActivity(intent)
             }
@@ -85,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "MainActivity"
+        const val TAG = "NewsPageActivity"
         const val EXTRA_ARTICLE = "extra_article"
     }
 }

@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">NoticiasFrescas</string>
-    <string name="sports_news">SPORTS NEWS</string>
-    <string name="technology_news">TECHNOLOGY NEWS</string>
-    <string name="entertainment_news">ENTERTAINMENT NEWS</string>
-    <string name="science_news">SCIENCE NEWS</string>
+    <string name="app_name" translatable="false">FreshNews</string>
+    <string name="sports_news" translatable="false">SPORTS NEWS</string>
+    <string name="technology_news" translatable="false">TECHNOLOGY NEWS</string>
+    <string name="entertainment_news" translatable="false">ENTERTAINMENT NEWS</string>
+    <string name="science_news" translatable="false">SCIENCE NEWS</string>
+    <string name="language" translatable="false">Language:</string>
+    <string name="start" translatable="false">START</string>
+    <string name="textview" translatable="false">Select the category</string>
 </resources>
