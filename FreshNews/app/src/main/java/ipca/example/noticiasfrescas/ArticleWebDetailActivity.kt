@@ -1,7 +1,10 @@
 package ipca.example.noticiasfrescas
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.webkit.WebView
 import org.json.JSONObject
 
@@ -21,5 +24,24 @@ class ArticleWebDetailActivity : AppCompatActivity() {
             findViewById<WebView>(R.id.webView).loadUrl(it)
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_article,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_share -> {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_TEXT, article?.url)
+                intent.type = "text/plain"
+                val intentChooser = Intent.createChooser(intent, article?.title)
+                startActivity(intentChooser)
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
