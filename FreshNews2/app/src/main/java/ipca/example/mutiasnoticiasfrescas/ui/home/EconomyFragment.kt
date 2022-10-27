@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import ipca.example.mutiasnoticiasfrescas.*
 import ipca.example.mutiasnoticiasfrescas.databinding.FragmentGeneralBinding
 
-class GeneralFragment : Fragment() {
+class EconomyFragment : Fragment() {
 
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
@@ -36,10 +36,11 @@ class GeneralFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Backend.fetchTopHeadlines(lifecycleScope, "pt","general"){
+        Backend.fetchTopHeadlines(lifecycleScope, "pt","business"){
             articles = it
             adapter.notifyDataSetChanged()
         }
+
 
         binding.listViewArticles.adapter = adapter
     }
@@ -85,15 +86,11 @@ class GeneralFragment : Fragment() {
                 Log.d(MainActivity.TAG, "article:${article.title}")
 
                 findNavController().navigate(
-                    R.id.action_navigation_home_to_articleWebDetailFragment,
+                    R.id.action_economyFragment_to_articleWebDetailFragment,
                     Bundle().apply {
                         putString(ArticleWebDetailFragment.ARTICLE_JSON_STRING,article.toJSON().toString())
                     }
                     )
-
-                //val intent = Intent(requireContext(), ArticleWebDetailActivity::class.java)
-                //intent.putExtra(EXTRA_ARTICLE, article.toJSON().toString())
-                //startActivity(intent)
             }
 
             return rowView

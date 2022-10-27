@@ -1,15 +1,18 @@
 package ipca.example.mutiasnoticiasfrescas
 
+import androidx.room.*
 import org.json.JSONObject
+import java.net.URL
 import java.util.*
 
+@Entity
 class Article {
 
     var title       : String? = null
     var content     : String? = null
     var publishedAt : Date? = null
     var urlToImage  : String? = null
-    var url         : String? = null
+    @PrimaryKey var url         : String? = null
 
     constructor(title: String?,
                 content: String?,
@@ -44,5 +47,19 @@ class Article {
             )
         }
     }
+}
 
+@Dao
+interface ArticleDao {
+    @Query("SELECT * FROM Article")
+    fun getAll() : List<Article>
+
+    @Query("SELECT * FROM Article WHERE url = :url")
+    fun getByUrl(url: String): Article
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(article: Article)
+
+    @Delete
+    fun delete(article: Article)
 }

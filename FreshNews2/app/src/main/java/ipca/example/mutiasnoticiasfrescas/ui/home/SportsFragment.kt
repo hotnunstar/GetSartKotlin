@@ -1,6 +1,5 @@
 package ipca.example.mutiasnoticiasfrescas.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import ipca.example.mutiasnoticiasfrescas.*
 import ipca.example.mutiasnoticiasfrescas.databinding.FragmentGeneralBinding
 
-class GeneralFragment : Fragment() {
+class SportsFragment : Fragment() {
 
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
@@ -36,10 +34,11 @@ class GeneralFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Backend.fetchTopHeadlines(lifecycleScope, "pt","general"){
+        Backend.fetchTopHeadlines(lifecycleScope, "pt","sports"){
             articles = it
             adapter.notifyDataSetChanged()
         }
+
 
         binding.listViewArticles.adapter = adapter
     }
@@ -85,7 +84,7 @@ class GeneralFragment : Fragment() {
                 Log.d(MainActivity.TAG, "article:${article.title}")
 
                 findNavController().navigate(
-                    R.id.action_navigation_home_to_articleWebDetailFragment,
+                    R.id.action_sportsFragment_to_articleWebDetailFragment,
                     Bundle().apply {
                         putString(ArticleWebDetailFragment.ARTICLE_JSON_STRING,article.toJSON().toString())
                     }
