@@ -1,8 +1,8 @@
 package ipca.example.mutiasnoticiasfrescas
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import org.json.JSONObject
-import java.net.URL
 import java.util.*
 
 @Entity
@@ -12,13 +12,14 @@ class Article {
     var content     : String? = null
     var publishedAt : Date? = null
     var urlToImage  : String? = null
-    @PrimaryKey var url         : String? = null
+    @PrimaryKey
+    var url         : String
 
     constructor(title: String?,
                 content: String?,
                 publishedAt: Date?,
                 urlToImage: String?,
-                url: String?) {
+                url: String) {
         this.title = title
         this.content = content
         this.publishedAt = publishedAt
@@ -47,19 +48,22 @@ class Article {
             )
         }
     }
+
 }
 
 @Dao
 interface ArticleDao {
-    @Query("SELECT * FROM Article")
-    fun getAll() : List<Article>
 
-    @Query("SELECT * FROM Article WHERE url = :url")
-    fun getByUrl(url: String): Article
+    @Query("SELECT * FROM article")
+    fun getAll() : LiveData<List<Article>>
+
+    @Query("SELECT * FROM article WHERE url = :url")
+    fun getByUrl(url: String): LiveData<Article?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(article: Article)
 
     @Delete
     fun delete(article: Article)
+
 }

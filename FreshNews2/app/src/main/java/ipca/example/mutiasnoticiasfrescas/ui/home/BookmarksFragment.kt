@@ -1,5 +1,6 @@
 package ipca.example.mutiasnoticiasfrescas.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,16 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import ipca.example.mutiasnoticiasfrescas.*
 import ipca.example.mutiasnoticiasfrescas.databinding.FragmentGeneralBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class EconomyFragment : Fragment() {
+class BookmarksFragment : Fragment() {
 
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
@@ -36,13 +39,13 @@ class EconomyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val model : ArticlesViewModel by viewModels()
-        model.getArticles.observe(viewLifecycleOwner, Observer {
-            articles = it as ArrayList<Article>
-            adapter.notifyDataSetChanged()
+        AppDatabase.getDatabase(requireContext())
+            ?.articleDao()
+            ?.getAll()
+            ?.observe(viewLifecycleOwner, Observer {
+                articles = it as ArrayList<Article>
+                adapter.notifyDataSetChanged()
         })
-
-        model.setCategory("business")
 
         binding.listViewArticles.adapter = adapter
     }
@@ -83,11 +86,12 @@ class EconomyFragment : Fragment() {
                 }
             }
 
+
             rowView.setOnClickListener {
                 Log.d(MainActivity.TAG, "article:${article.title}")
 
                 findNavController().navigate(
-                    R.id.action_economyFragment_to_articleWebDetailFragment,
+                    R.id.action_bookmarksFragment_to_articleWebDetailFragment,
                     Bundle().apply {
                         putString(ArticleWebDetailFragment.ARTICLE_JSON_STRING,article.toJSON().toString())
                     }

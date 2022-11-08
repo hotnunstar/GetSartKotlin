@@ -3,8 +3,11 @@ package ipca.example.mutiasnoticiasfrescas
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -21,8 +24,8 @@ object Backend {
     fun fetchTopHeadlines(scope: CoroutineScope,
                           country: String,
                           category: String,
-                          callback: (ArrayList<Article>)->Unit )   {
-        scope.launch (Dispatchers.IO) {
+                          callback: (ArrayList<Article>)->Unit ) {
+        scope.launch(Dispatchers.IO) {
 
             val request = Request.Builder()
                 .url("https://newsapi.org/v2/top-headlines?country=$country&category=$category&apiKey=$API_KEY")
@@ -31,25 +34,52 @@ object Backend {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
-                val result =  response.body!!.string()
+                val result = response.body!!.string()
                 Log.d(MainActivity.TAG, result)
 
                 val jsonObject = JSONObject(result)
-                if (jsonObject.getString("status") == "ok"){
+                if (jsonObject.getString("status") == "ok") {
                     val articles = arrayListOf<Article>()
                     val articlesJSONArray = jsonObject.getJSONArray("articles")
-                    for( index in 0 until articlesJSONArray.length()){
+                    for (index in 0 until articlesJSONArray.length()) {
                         val articleJSONObject = articlesJSONArray.getJSONObject(index)
                         val article = Article.fromJSON(articleJSONObject)
                         articles.add(article)
                     }
-                    scope.launch (Dispatchers.Main){
+                    scope.launch(Dispatchers.Main) {
                         callback(articles)
                     }
                 }
             }
         }
     }
+
+        fun fetchTopHeadlines(country: String,
+                              category: String) : LiveData<List<Article>> = liveData(IO)
+        {
+            val request = Request.Builder()
+                .url("https://newsapi.org/v2/top-headlines?country=$country&category=$category&apiKey=$API_KEY")
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                val result = response.body!!.string()
+                Log.d(MainActivity.TAG, result)
+
+                val jsonObject = JSONObject(result)
+                if (jsonObject.getString("status") == "ok") {
+                    val articles = arrayListOf<Article>()
+                    val articlesJSONArray = jsonObject.getJSONArray("articles")
+                    for (index in 0 until articlesJSONArray.length()) {
+                        val articleJSONObject = articlesJSONArray.getJSONObject(index)
+                        val article = Article.fromJSON(articleJSONObject)
+                        articles.add(article)
+                    }
+                    emit(articles)
+                }
+            }
+       }
 
     fun fetchImage(scope: CoroutineScope,
                    url: String,
@@ -72,5 +102,4 @@ object Backend {
             }
         }
     }
-
 }
