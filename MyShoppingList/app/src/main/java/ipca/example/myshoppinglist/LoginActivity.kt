@@ -3,7 +3,9 @@ package ipca.example.myshoppinglist
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -17,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -29,10 +32,10 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithEmail:success")
-                        val user = auth.currentUser
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        //val user = auth.currentUser
+                        startActivity(Intent(this@LoginActivity,
+                            MainActivity::class.java))
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -41,18 +44,18 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
         }
+
+        binding.imageButtonSecurepass.setOnClickListener {
+            if (binding.editTextPassword.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD){
+                binding.editTextPassword.inputType = InputType.TYPE_CLASS_TEXT
+            }else{
+                binding.editTextPassword.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+        }
+
     }
 
-    companion object {
+    companion object{
         const val TAG = "LoginActivity"
     }
 }
-
-/*public override fun onStart() {
-    super.onStart()
-    // Check if user is signed in (non-null) and update UI accordingly.
-    val currentUser = auth.currentUser
-    if(currentUser != null){
-        reload();
-    }
-}*/

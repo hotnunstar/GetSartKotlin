@@ -18,11 +18,13 @@ class SplashActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             delay(1000)
             val currentUser = Firebase.auth.currentUser
-            if (currentUser != null) {
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-            } else {
-                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+            if(currentUser != null){
+                startActivity(Intent(this@SplashActivity,MainActivity::class.java))
+            }else{
+                startActivity(Intent(this@SplashActivity,LoginActivity::class.java))
             }
         }
+
+
     }
 }

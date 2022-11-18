@@ -3,24 +3,34 @@ package ipca.example.myshoppinglist
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import ipca.example.myshoppinglist.databinding.FragmentShoppingListBinding
 
 class ShoppingListFragment : Fragment() {
 
     var items = arrayListOf<Item>()
+    var itemsAll = arrayListOf<Item>()
 
     private var _binding: FragmentShoppingListBinding? = null
     private val binding get() = _binding!!
 
     private val adapter = ItemsAdapter()
+
+    private val db = Firebase.firestore
+    private val currentUser = Firebase.auth.currentUser
+
+    private var viewAll = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,20 +45,61 @@ class ShoppingListFragment : Fragment() {
 
         binding.listViewItems.adapter = adapter
 
-        val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if (it.resultCode == Activity.RESULT_OK){
-                val data: Intent? = it.data
-                val description = data?.getStringExtra("description")
-                val qtd = data?.getDoubleExtra("qtd", 0.0)
-                items.add(Item(description,qtd))
+        binding.fabAdd.setOnClickListener {
+            startActivity(Intent(requireContext(),AddItemActivity::class.java))
+        }
+
+
+
+        db.collection("users")
+            .document(currentUser!!.uid)
+            .collection("shoppingList")
+            //.whereEqualTo("done", false)
+            .addSnapshotListener { value, error ->
+                if(error != null) {
+                    return@addSnapshotListener
+                }
+
+                items.clear()
+                itemsAll.clear()
+
+                for (doc in value!!){
+                    val item = Item.fromDoc(doc)
+                    if(item.done == false)
+                        items.add(item)
+                    itemsAll.add(item)
+                }
                 adapter.notifyDataSetChanged()
             }
-        }
 
-        binding.fabAdd.setOnClickListener {
-            resultLauncher.launch(Intent(requireContext(),AddItemActivity::class.java))
-        }
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu)
+            }
 
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.action_all -> {
+                        // clearCompletedTasks()
+                        viewAll = !viewAll
+
+                        if (!viewAll){
+                            items = itemsAll.filter {
+                                it.done == false
+                            } as ArrayList<Item>
+                        }else{
+                            items = itemsAll
+                        }
+
+                        adapter.notifyDataSetChanged()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onDestroyView() {
@@ -84,6 +135,24 @@ class ShoppingListFragment : Fragment() {
 
             }
             buttonMinus.setOnClickListener {
+
+                var value = items[position].qtd!! - 1.0
+
+                if (value <= 0)  {
+                    db.collection("users")
+                        .document(currentUser!!.uid)
+                        .collection("shoppingList")
+                        .document( items[position].uid)
+                        .update("done",true)
+
+                }
+
+                db.collection("users")
+                    .document(currentUser!!.uid)
+                    .collection("shoppingList")
+                    .document( items[position].uid)
+                    .update("qtd",value)
+
 
             }
 
