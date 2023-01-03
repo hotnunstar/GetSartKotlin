@@ -13,7 +13,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import ipca.example.myshoppinglist.databinding.ActivityAddItemBinding
 
-
 class AddItemActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityAddItemBinding
@@ -45,18 +44,12 @@ class AddItemActivity : AppCompatActivity() {
 
                 val textView = binding.editTextDescription as AutoCompleteTextView
                 textView.setAdapter(adapter)
-
             }
 
-
-
-
         binding.buttonSave.setOnClickListener {
-
             val description: String = binding.editTextDescription.text.toString()
             val qtd: Double = binding.editTextQtd.text.toString().toDouble()
             val item = Item(description,qtd, true,false,"")
-
 
             db.collection("users")
                 .document(currentUser?.uid!!)
@@ -98,11 +91,7 @@ class AddItemActivity : AppCompatActivity() {
                                 Toast.makeText(this@AddItemActivity, "Falha de conexão", Toast.LENGTH_SHORT).show()
                             }
                     }
-
-
                 }
-
-
         }
     }
     companion object{

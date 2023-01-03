@@ -49,8 +49,6 @@ class ShoppingListFragment : Fragment() {
             startActivity(Intent(requireContext(),AddItemActivity::class.java))
         }
 
-
-
         db.collection("users")
             .document(currentUser!!.uid)
             .collection("shoppingList")
@@ -144,7 +142,6 @@ class ShoppingListFragment : Fragment() {
                         .collection("shoppingList")
                         .document( items[position].uid)
                         .update("done",true)
-
                 }
 
                 db.collection("users")
@@ -152,8 +149,6 @@ class ShoppingListFragment : Fragment() {
                     .collection("shoppingList")
                     .document( items[position].uid)
                     .update("qtd",value)
-
-
             }
 
             return rootView
